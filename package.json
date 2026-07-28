@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "manifest": "node scripts/generate-data.js"
+    }
+}

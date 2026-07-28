@@ -1,0 +1,55 @@
+<nav class="navbar card">
+    <div class="nav-group" id="navGroup">
+        <button class="nav-btn is-active"
+            hx-get="/pages/home.html"
+            hx-target="#content"
+            hx-swap="innerHTML"
+            hx-indicator="#loading">
+            Home
+        </button>
+    </div>
+</nav>
+
+<script>
+(function () {
+    function setActiveNav(btn) {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("is-active"));
+        btn.classList.add("is-active");
+    }
+
+    async function buildCsvNav() {
+        try {
+            const res = await fetch("data/manifest.json");
+            const files = await res.json();
+            const navGroup = document.getElementById("navGroup");
+
+            files.forEach(file => {
+                const btn = document.createElement("button");
+                btn.className = "nav-btn";
+                btn.textContent = file.replace(".csv", "").toUpperCase();
+
+                btn.setAttribute("hx-get", "/pages/loadCSV.html");
+                btn.setAttribute("hx-target", "#content");
+                btn.setAttribute("hx-swap", "innerHTML");
+                btn.setAttribute("hx-indicator", "#loading");
+
+                btn.addEventListener("click", () => {
+                    window.__csvFile = file; // simpan file mana yang dipilih
+                    setActiveNav(btn);
+                });
+
+                navGroup.appendChild(btn);
+
+                // WAJIB: htmx tidak otomatis "melihat" elemen yang
+                // ditambahkan lewat JS setelah initial load.
+                // htmx.process() memberitahu htmx untuk bind hx-* di elemen ini.
+                htmx.process(btn);
+            });
+        } catch (err) {
+            console.error("Gagal membaca manifest CSV:", err);
+        }
+    }
+
+    buildCsvNav();
+})();
+</script>

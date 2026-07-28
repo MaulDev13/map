@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="app-version" content="CACHE_BUST">
+
+    <title>Maul Dev</title>
+
+    <link rel="icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+
+    <!-- <meta name="api-base" content="https://simple-go-production.up.railway.app"> -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+
+<body>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="container content-center page-stack">
+
+        <!-- NAVBAR -->
+        <nav
+            hx-get="/components/navbar.html"
+            hx-trigger="load"
+            hx-swap="innerHTML">
+        </nav>
+
+        <!-- CONTENT AREA -->
+        <main class="page-stack">
+
+            <div id="loading" class="hidden">
+                <p class="text-meta">Loading...</p>
+            </div>
+
+            <section id="content"
+                hx-get="/pages/home.html"
+                hx-trigger="load"
+                hx-swap="innerHTML">
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer style="text-align:center;">
+            <p class="text-meta">Architecture: HTMX</p>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="js/app.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/router.js"></script>
+    <script src="js/core/loading.js"></script>
+    <script src="js/core/error.js"></script>
+
+    <script src="js/core/navigation.js"></script>
+
+    <script src="js/features/loadCSV.js"></script>
+</body>
+</html>
