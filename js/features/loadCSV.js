@@ -1,6 +1,7 @@
 async function loadCSV() {
     try {
         const file = window.__csvFile || "data1.csv"; // default kalau belum pilih
+        console.log(`Membaca Path: ${CONFIG.BASE_PATH}data/${file}`);
         const response = await fetch(`${CONFIG.BASE_PATH}data/${file}`);
 
         if(!response.ok) {
