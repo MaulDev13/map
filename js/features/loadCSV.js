@@ -23,6 +23,17 @@ function updateCsvTitle(file) {
     }
 }
 
+// Deteksi apakah sebuah teks adalah URL
+function isUrl(text) {
+    return /^https?:\/\//i.test(text.trim());
+}
+
+// Potong teks panjang jadi "20 karakter pertama..."
+function truncate(text, maxLength = 20) {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+}
+
 function createTable(headers, data) {
     const thead = document.querySelector("#tableData thead");
     const tbody = document.querySelector("#tableData tbody");
@@ -30,6 +41,7 @@ function createTable(headers, data) {
     thead.innerHTML = "";
     tbody.innerHTML = "";
 
+    // Header
     const trHead = document.createElement("tr");
     headers.forEach(header => {
         const th = document.createElement("th");
@@ -38,13 +50,33 @@ function createTable(headers, data) {
     });
     thead.appendChild(trHead);
 
+    // Body
     data.forEach(row => {
         const tr = document.createElement("tr");
+
         headers.forEach((_, index) => {
             const td = document.createElement("td");
-            td.textContent = row[index] ? row[index].trim() : "";
+            const rawValue = row[index] ? row[index].trim() : "";
+
+            if (isUrl(rawValue)) {
+                // Jadikan hyperlink dengan label "Link"
+                const a = document.createElement("a");
+                a.href = rawValue;
+                a.textContent = "Link";
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                td.appendChild(a);
+            } else {
+                // Potong teks panjang, tapi simpan teks lengkap di tooltip (title)
+                td.textContent = truncate(rawValue);
+                if (rawValue.length > 20) {
+                    td.title = rawValue;
+                }
+            }
+
             tr.appendChild(td);
         });
+
         tbody.appendChild(tr);
     });
 }

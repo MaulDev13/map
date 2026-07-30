@@ -16,7 +16,8 @@ body {
 }
 
 .container {
-	max-width: 62.5rem;
+	width: 100%;
+	max-width: 80rem;
 	margin: 0 auto;
 	padding: var(--space-xl) var(--space-lg);
 	background: transparent;
@@ -29,6 +30,6 @@ body {
 }
 
 .content-center {
-	max-width: 48rem;
+	max-width: 80rem;
 	margin: 0 auto;
 }
