@@ -9,6 +9,6 @@ window.CONFIG = {
         (location.hostname === "localhost" || 
             location.hostname === "127.0.0.1"
             ? ""
-            : "/map-key/"
+            : "/map/"
         )
 };
