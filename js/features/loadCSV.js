@@ -1,7 +1,12 @@
 async function loadCSV() {
     try {
         const file = window.__csvFile || "data1.csv"; // default kalau belum pilih
-        const response = await fetch(`data/${file}`);
+        const response = await fetch(`${CONFIG.BASE_PATH}data/${file}`);
+
+        if(!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const csv = await response.text();
 
         const rows = csv.trim().split("\n");
