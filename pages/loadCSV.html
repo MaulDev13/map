@@ -1,58 +1,48 @@
-<section class="page-stack">
+    <section class="page-stack">
+        <div class="card card--sm">
+            <input
+                type="text"
+                id="tableSearch"
+                placeholder="Cari..."
+                style="width:100%; padding: var(--space-sm) var(--space-md); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:var(--text-sm); background:var(--surface); color:var(--text-body);"
+            />
+        </div>
 
-    <div class="card">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:var(--space-md); flex-wrap:wrap;">
-            <div>
-                <h2>Data CSV</h2>
-                <p class="text-meta">Menampilkan isi <code id="csvFileName">...</code></p>
+        <div class="card card--flat" style="padding:0;">
+            <div class="table-wrapper">
+                <table id="tableData" class="table is-striped">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
-    </div>
 
-    <div class="card card--sm">
-        <input
-            type="text"
-            id="tableSearch"
-            placeholder="Cari..."
-            style="width:100%; padding: var(--space-sm) var(--space-md); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:var(--text-sm); background:var(--surface); color:var(--text-body);"
-        />
-    </div>
+    </section>
 
-    <div class="card card--flat" style="padding:0;">
-        <div class="table-wrapper">
-            <table id="tableData" class="table is-striped">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+    <script>
+    (function () {
+        if (typeof loadCSV === "function") {
+            loadCSV();
+        }
 
-</section>
+        const searchInput = document.getElementById("tableSearch");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                const query = e.target.value.trim().toLowerCase();
+                const rows = document.querySelectorAll("#tableData tbody tr");
+                let visibleCount = 0;
 
-<script>
-(function () {
-    if (typeof loadCSV === "function") {
-        loadCSV();
-    }
+                rows.forEach(row => {
+                    const match = row.textContent.toLowerCase().includes(query);
+                    row.style.display = match ? "" : "none";
+                    if (match) visibleCount++;
+                });
 
-    const searchInput = document.getElementById("tableSearch");
-    if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
-            const query = e.target.value.trim().toLowerCase();
-            const rows = document.querySelectorAll("#tableData tbody tr");
-            let visibleCount = 0;
-
-            rows.forEach(row => {
-                const match = row.textContent.toLowerCase().includes(query);
-                row.style.display = match ? "" : "none";
-                if (match) visibleCount++;
+                const rowCountEl = document.getElementById("rowCount");
+                if (rowCountEl) {
+                    rowCountEl.textContent = `${visibleCount} baris`;
+                }
             });
-
-            const rowCountEl = document.getElementById("rowCount");
-            if (rowCountEl) {
-                rowCountEl.textContent = `${visibleCount} baris`;
-            }
-        });
-    }
-})();
-</script>
+        }
+    })();
+    </script>
