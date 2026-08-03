@@ -7,7 +7,7 @@
 // const CSV_DELIMITER = ";";   // Only semicolon
 
 // Kolom yang secara default disembunyikan saat pertama load (opsional)
-const DEFAULT_HIDDEN_COLUMNS = ["Keyword"];
+// const DEFAULT_HIDDEN_COLUMNS = ["Keyword"];
 
 // Leave as "auto" to detect automatically.
 const CSV_DELIMITER = "auto";
