@@ -6,6 +6,9 @@
 // const CSV_DELIMITER = ",";   // Only comma
 // const CSV_DELIMITER = ";";   // Only semicolon
 
+// Kolom yang secara default disembunyikan saat pertama load (opsional)
+const DEFAULT_HIDDEN_COLUMNS = ["Keyword"];
+
 // Leave as "auto" to detect automatically.
 const CSV_DELIMITER = "auto";
 
@@ -85,9 +88,10 @@ function createTable(headers, data) {
     // Header
     const trHead = document.createElement("tr");
 
-    headers.forEach(header => {
+    headers.forEach((header, index) => {
         const th = document.createElement("th");
         th.textContent = header;
+        th.dataset.colIndex = index; // <-- penanda kolom
         trHead.appendChild(th);
     });
 
@@ -100,6 +104,8 @@ function createTable(headers, data) {
         headers.forEach((_, index) => {
             const td = document.createElement("td");
             const rawValue = row[index] || "";
+
+            td.dataset.colIndex = index; // <-- penanda kolom
 
             if (isUrl(rawValue)) {
                 const a = document.createElement("a");
@@ -120,6 +126,55 @@ function createTable(headers, data) {
         });
 
         tbody.appendChild(tr);
+    });
+
+    renderColumnToggles(headers); // <-- ditambahkan, supaya toggle ikut dibuat
+}
+
+// Bikin checkbox show/hide per kolom
+function renderColumnToggles(headers) {
+    const container = document.getElementById("columnToggles");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    headers.forEach((header, index) => {
+        const isHiddenByDefault = DEFAULT_HIDDEN_COLUMNS.includes(header);
+
+        const label = document.createElement("label");
+        label.style.display = "flex";
+        label.style.alignItems = "center";
+        label.style.gap = "4px";
+        label.style.fontSize = "var(--text-sm)";
+        label.style.cursor = "pointer";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = !isHiddenByDefault;
+        checkbox.dataset.colIndex = index;
+
+        checkbox.addEventListener("change", (e) => {
+            toggleColumn(index, e.target.checked);
+        });
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(header));
+        container.appendChild(label);
+
+        // Terapkan status default (hide) saat render pertama
+        if (isHiddenByDefault) {
+            toggleColumn(index, false);
+        }
+    });
+}
+
+// Tampilkan / sembunyikan semua sel pada kolom tertentu
+function toggleColumn(colIndex, show) {
+    const cells = document.querySelectorAll(
+        `#tableData [data-col-index="${colIndex}"]`
+    );
+    cells.forEach(cell => {
+        cell.style.display = show ? "" : "none";
     });
 }
 
