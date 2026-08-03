@@ -38,6 +38,24 @@
                 Temukan cafe untuk nongkrong, bekerja, meeting, maupun sekadar
                 menikmati kopi terbaik di kotamu.
             </p>
+
+            <div class="card card--sm project-item">
+                <button
+                    class="button button--primary"
+                    hx-get="/pages/contents/cafe-content.html"
+                    hx-target="#cafe-content"
+                    hx-trigger="click once"
+                    hx-swap="innerHTML"
+                    onclick="toggleProject(this, 'cafe-content')"
+                >
+                    <span>List</span>
+                    <span class="arrow">▼</span>
+                </button>
+
+                <div id="cafe-content" class="project-content hidden"></div>
+
+            </div>
+
         </div>
 
         <div class="card">
@@ -103,3 +121,5 @@
     </div>
 
 </section>
+
+<script src="/js/features/toggle-ui.js"></script>

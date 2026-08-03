@@ -1,0 +1,53 @@
+<div class="card card--flat">
+
+    <h3>Cafe</h3>
+
+    <div id="projectLinks"></div>
+
+</div>
+
+<script>
+(function () {
+
+    async function buildProjectLinks() {
+        try {
+            const res = await fetch("data/manifest.json");
+            const files = await res.json();
+
+            const container = document.getElementById("projectLinks");
+
+            files.forEach(item => {
+                const link = document.createElement("button");
+
+                link.className = "project-item";
+                link.textContent = item.label.join(" ");
+
+                // Same behavior as navbar
+                link.setAttribute("hx-get", "/pages/loadCSV.html");
+                link.setAttribute("hx-target", "#content");
+                link.setAttribute("hx-swap", "innerHTML");
+                link.setAttribute("hx-indicator", "#loading");
+
+                link.addEventListener("click", () => {
+                    window.__csvFile = item.file;
+
+                    console.log("Selected CSV:", item.file);
+                    console.log("Label:", item.label);
+                });
+
+                container.appendChild(link);
+                container.appendChild(document.createElement("br"));
+
+                // Activate HTMX for dynamically created elements
+                htmx.process(link);
+            });
+
+        } catch (err) {
+            console.error("Failed loading manifest:", err);
+        }
+    }
+
+    buildProjectLinks();
+
+})();
+</script>

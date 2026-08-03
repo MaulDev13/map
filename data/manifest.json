@@ -1,5 +1,12 @@
 [
     {
+        "file": "cafe.csv",
+        "label": [
+            "Cafe"
+        ],
+        "password": null
+    },
+    {
         "file": "kos.csv",
         "label": [
             "Kos"
