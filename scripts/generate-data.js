@@ -10,15 +10,33 @@ function generateManifest() {
         process.exit(1);
     }
 
-    const files = fs
+    const manifest = fs
         .readdirSync(DATA_DIR)
         .filter(file => file.toLowerCase().endsWith(".csv"))
-        .sort(); // urut alfabetis biar konsisten (data1, data2, ...)
+        .sort()
+        .map(file => {
+            const fileName = path.parse(file).name;
 
-    fs.writeFileSync(MANIFEST_PATH, JSON.stringify(files, null, 4));
+            const label = fileName
+                .split(/[_\-\s]+/) // pisahkan berdasarkan _, -, atau spasi
+                .filter(Boolean)
+                .map(
+                    word =>
+                        word.charAt(0).toUpperCase() +
+                        word.slice(1).toLowerCase()
+                );
 
-    console.log(`✅ manifest.json dibuat dengan ${files.length} file:`);
-    files.forEach(f => console.log(`   - ${f}`));
+            return {
+                file,
+                label,
+                password: null
+            };
+        });
+
+    fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 4));
+
+    console.log(`✅ manifest.json dibuat dengan ${manifest.length} file:`);
+    manifest.forEach(item => console.log(`   - ${item.file} (${item.label})`));
 }
 
 generateManifest();

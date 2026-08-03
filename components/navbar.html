@@ -23,9 +23,15 @@
             const files = await res.json();
             const navGroup = document.getElementById("navGroup");
 
-            files.forEach(file => {
+            files.forEach(item => {
+                const file = item.file;
+
+                console.log("Generated CSV:", file);
+                console.log("Label:", item.label);
+                
                 const btn = document.createElement("button");
                 btn.className = "nav-btn";
+
                 btn.textContent = file.replace(".csv", "").toUpperCase();
 
                 btn.setAttribute("hx-get", "/pages/loadCSV.html");

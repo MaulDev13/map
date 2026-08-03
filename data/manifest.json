@@ -1,5 +1,26 @@
 [
-    "kos.csv",
-    "kos_clean (1).csv",
-    "kos_clean.csv"
+    {
+        "file": "kos.csv",
+        "label": [
+            "Kos"
+        ],
+        "password": null
+    },
+    {
+        "file": "kos_clean (1).csv",
+        "label": [
+            "Kos",
+            "Clean",
+            "(1)"
+        ],
+        "password": null
+    },
+    {
+        "file": "kos_clean.csv",
+        "label": [
+            "Kos",
+            "Clean"
+        ],
+        "password": null
+    }
 ]
