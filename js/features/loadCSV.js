@@ -26,7 +26,7 @@ function getDelimiter(headerLine) {
 
 async function loadCSV() {
     try {
-        const file = window.__csvFile || "data1.csv";
+        const file = window.__csvFile;
 
         console.log(`Reading: ${CONFIG.BASE_PATH}data/${file}`);
 
