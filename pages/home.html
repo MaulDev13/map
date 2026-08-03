@@ -80,6 +80,23 @@
                 Temukan hotel, homestay, guest house, maupun villa
                 untuk perjalanan bisnis ataupun liburan.
             </p>
+
+            <div class="card card--sm project-item">
+                <button
+                    class="button button--primary"
+                    hx-get="/pages/contents/hostelry-content.html"
+                    hx-target="#hostelry-content"
+                    hx-trigger="click once"
+                    hx-swap="innerHTML"
+                    onclick="toggleProject(this, 'hostelry-content')"
+                >
+                    <span>List</span>
+                    <span class="arrow">▼</span>
+                </button>
+
+                <div id="hostelry-content" class="project-content hidden"></div>
+
+            </div>
         </div>
 
         <div class="card">
