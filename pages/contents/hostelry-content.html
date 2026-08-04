@@ -1,5 +1,5 @@
 <div class="card card--flat">
-    <div id="projectLinks"></div>
+    <div id="hostelry-content"></div>
 </div>
 
 <script>
@@ -10,12 +10,12 @@
             const res = await fetch("data/manifest.json");
             const files = await res.json();
 
-            const container = document.getElementById("projectLinks");
+            const container = document.getElementById("hostelry-content");
             container.innerHTML = "";
 
             // Categories to display
             // OR logic: an item is shown if it contains ANY of these labels.
-            const categories = ["Kos"];
+            const categories = ["Cafe"];
 
             const filteredFiles = files.filter(item =>
                 categories.some(category => item.label.includes(category))
@@ -33,30 +33,26 @@
                 }
 
                 // Same behavior as navbar
-                link.setAttribute("hx-get", "/pages/loadCSV.html");
-                link.setAttribute("hx-target", "#content");
-                link.setAttribute("hx-swap", "innerHTML");
-                link.setAttribute("hx-indicator", "#loading");
-
-                link.addEventListener("click", (e) => {
+                link.addEventListener("click", async () => {
                     if (item.password) {
                         const enteredPassword = prompt("Enter password:");
 
-                        // User cancel prompt (null) atau salah password
-                        if (enteredPassword === null || enteredPassword !== item.password) {
-                            if (enteredPassword !== null) {
-                                alert("Incorrect password.");
-                            }
-                            e.preventDefault();
-                            e.stopPropagation();
-                            return;
+                        if (enteredPassword === null) {
+                            return; // Stay on current page
+                        }
+
+                        if (enteredPassword !== item.password) {
+                            alert("Incorrect password.");
+                            return; // Stay on current page
                         }
                     }
 
                     window.__csvFile = item.file;
 
-                    console.log("Selected CSV:", item.file);
-                    console.log("Label:", item.label);
+                    htmx.ajax("GET", "/pages/loadCSV.html", {
+                        target: "#content",
+                        swap: "innerHTML"
+                    });
                 });
 
                 container.appendChild(link);
