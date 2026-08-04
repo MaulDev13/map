@@ -1,6 +1,10 @@
 /* =========================================================
    BASE
    ========================================================= */
+html {
+	scrollbar-gutter: stable;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -21,6 +25,7 @@ body {
 	margin: 0 auto;
 	padding: var(--space-xl) var(--space-lg);
 	background: transparent;
+	min-width: 0;
 }
 
 .page-stack {
