@@ -4,14 +4,14 @@
         "label": [
             "Cafe"
         ],
-        "password": null
+        "password": "Cafe123"
     },
     {
         "file": "kos.csv",
         "label": [
             "Kos"
         ],
-        "password": null
+        "password": "Kos123"
     },
     {
         "file": "kos_clean (1).csv",

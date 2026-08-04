@@ -39,3 +39,9 @@
 	border-color: transparent;
 	box-shadow: transparent 0px 0px 0px 0px, var(--shadow) 0px 2px 4px 0px;
 }
+
+.project-item--locked::after {
+    content: " 🔒";
+    font-size: 0.85em;
+    opacity: 0.7;
+}

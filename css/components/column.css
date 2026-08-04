@@ -1,0 +1,51 @@
+.column-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-md);
+}
+
+/* Toggle All tetap di luar grid, biar gak ikut lebar seragam kolom */
+.toggle-all-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding-right: var(--space-md);
+    border-right: 1px solid var(--border-color, #ddd);
+}
+
+/* Wadah grid untuk daftar kolom */
+.column-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 6px 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Tiap item: lebar selalu penuh mengikuti kolom grid → rata & konsisten */
+.column-toggle-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    min-width: 0; /* wajib, supaya ellipsis anak bisa bekerja di dalam grid */
+}
+
+.column-checkbox {
+    flex-shrink: 0;
+}
+
+/* Ini kuncinya: label panjang otomatis dipotong jadi ... */
+.column-toggle-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+}

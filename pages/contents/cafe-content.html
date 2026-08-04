@@ -1,9 +1,5 @@
 <div class="card card--flat">
-
-    <h3>Cafe</h3>
-
     <div id="projectLinks"></div>
-
 </div>
 
 <script>
@@ -31,13 +27,32 @@
                 link.className = "project-item";
                 link.textContent = item.label.join(" ");
 
+                // Kasih tanda visual kalau item ini butuh password
+                if (item.password) {
+                    link.classList.add("project-item--locked");
+                }
+
                 // Same behavior as navbar
                 link.setAttribute("hx-get", "/pages/loadCSV.html");
                 link.setAttribute("hx-target", "#content");
                 link.setAttribute("hx-swap", "innerHTML");
                 link.setAttribute("hx-indicator", "#loading");
 
-                link.addEventListener("click", () => {
+                link.addEventListener("click", (e) => {
+                    if (item.password) {
+                        const enteredPassword = prompt("Enter password:");
+
+                        // User cancel prompt (null) atau salah password
+                        if (enteredPassword === null || enteredPassword !== item.password) {
+                            if (enteredPassword !== null) {
+                                alert("Incorrect password.");
+                            }
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return;
+                        }
+                    }
+
                     window.__csvFile = item.file;
 
                     console.log("Selected CSV:", item.file);

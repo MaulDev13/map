@@ -131,41 +131,105 @@ function createTable(headers, data) {
     renderColumnToggles(headers); // <-- ditambahkan, supaya toggle ikut dibuat
 }
 
-// Bikin checkbox show/hide per kolom
 function renderColumnToggles(headers) {
     const container = document.getElementById("columnToggles");
     if (!container) return;
 
     container.innerHTML = "";
+    container.classList.add("column-toggles");
 
+    // ===== Toggle All =====
+    const toggleAllLabel = document.createElement("label");
+    toggleAllLabel.classList.add("column-toggle-item", "toggle-all-item");
+
+    const toggleAllCheckbox = document.createElement("input");
+    toggleAllCheckbox.type = "checkbox";
+    toggleAllCheckbox.id = "toggleAllColumns";
+
+    const toggleAllText = document.createElement("span");
+    toggleAllText.textContent = "Toggle All";
+
+    toggleAllLabel.appendChild(toggleAllCheckbox);
+    toggleAllLabel.appendChild(toggleAllText);
+    container.appendChild(toggleAllLabel);
+
+    // ===== Grid untuk daftar kolom =====
+    const selectorWrapper = document.createElement("div");
+    selectorWrapper.classList.add("column-selector");
+    container.appendChild(selectorWrapper);
+
+    // // ===== Separator tipis (opsional, biar Toggle All kebeda dari list kolom) =====
+    // const divider = document.createElement("span");
+    // divider.classList.add("column-toggle-divider");
+    // container.appendChild(divider);
+
+    // ===== Checkbox per kolom, langsung jadi flex item, TANPA grid terpisah =====
     headers.forEach((header, index) => {
         const isHiddenByDefault = DEFAULT_HIDDEN_COLUMNS.includes(header);
 
         const label = document.createElement("label");
-        label.style.display = "flex";
-        label.style.alignItems = "center";
-        label.style.gap = "4px";
-        label.style.fontSize = "var(--text-sm)";
-        label.style.cursor = "pointer";
+        label.classList.add("column-toggle-item");
+        label.title = header; // fallback tooltip nama lengkap
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = !isHiddenByDefault;
         checkbox.dataset.colIndex = index;
+        checkbox.classList.add("column-checkbox");
 
         checkbox.addEventListener("change", (e) => {
             toggleColumn(index, e.target.checked);
+            updateToggleAllState();
         });
 
+        const text = document.createElement("span");
+        text.textContent = header;
+        text.classList.add("column-toggle-label");
+
         label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(header));
+        label.appendChild(text);
         container.appendChild(label);
 
-        // Terapkan status default (hide) saat render pertama
         if (isHiddenByDefault) {
             toggleColumn(index, false);
         }
     });
+
+    // ===== Event Toggle All =====
+    toggleAllCheckbox.addEventListener("change", (e) => {
+        const checked = e.target.checked;
+        const checkboxes = container.querySelectorAll(".column-checkbox");
+
+        checkboxes.forEach(cb => {
+            cb.checked = checked;
+            toggleColumn(Number(cb.dataset.colIndex), checked);
+        });
+
+        toggleAllCheckbox.indeterminate = false;
+    });
+
+    updateToggleAllState();
+}
+
+// Sinkronisasi state checkbox "Toggle All"
+function updateToggleAllState() {
+    const toggleAllCheckbox = document.getElementById("toggleAllColumns");
+    if (!toggleAllCheckbox) return;
+
+    const checkboxes = document.querySelectorAll("#columnToggles .column-checkbox");
+    const total = checkboxes.length;
+    const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+    if (checkedCount === 0) {
+        toggleAllCheckbox.checked = false;
+        toggleAllCheckbox.indeterminate = false;
+    } else if (checkedCount === total) {
+        toggleAllCheckbox.checked = true;
+        toggleAllCheckbox.indeterminate = false;
+    } else {
+        toggleAllCheckbox.checked = false;
+        toggleAllCheckbox.indeterminate = true;
+    }
 }
 
 // Tampilkan / sembunyikan semua sel pada kolom tertentu
