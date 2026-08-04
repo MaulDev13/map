@@ -1,5 +1,5 @@
 <div class="card card--flat">
-    <div id="projectLinks"></div>
+    <div id="cafe-content"></div>
 </div>
 
 <script>
@@ -10,7 +10,7 @@
             const res = await fetch("data/manifest.json");
             const files = await res.json();
 
-            const container = document.getElementById("projectLinks");
+            const container = document.getElementById("cafe-content");
             container.innerHTML = "";
 
             // Categories to display
