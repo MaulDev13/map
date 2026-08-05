@@ -3,11 +3,10 @@
     <div class="hero">
         <div class="card" style="text-align:center;padding:3rem;">
 
-            <h1>📄 CSV Dataset Viewer</h1>
+            <h1>📄 CSV Dataset Browser</h1>
 
             <p>
-                Browse, open, and view CSV files directly from your browser.
-                Select a dataset below to preview, search, and explore its contents.
+                Browse available CSV datasets and open them directly in the viewer.
             </p>
 
         </div>
@@ -17,22 +16,175 @@
 
         <h2>Available Datasets</h2>
 
-        <p>
-            Choose one of the CSV files below.
-            Password-protected datasets will require authentication before opening.
-        </p>
-
         <div
             id="dataset-list"
             class="card-group"
-            style="margin-top:1.5rem;"
+            style="margin-top:1rem;"
         ></div>
 
     </div>
 
-    <div
-        id="dataset-content"
-        style="margin-top:2rem;"
-    ></div>
-
 </section>
+
+<script>
+(() => {
+
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+
+    // null or [] -> show every dataset
+    // ["Cafe"] -> only Cafe
+    // ["Cafe", "Kos"] -> Cafe OR Kos
+    const categories = null;
+
+    const manifestPath = "data/manifest.json";
+
+    // ============================================
+    // LOAD MANIFEST
+    // ============================================
+
+    async function loadManifest() {
+
+        try {
+
+            const response = await fetch(manifestPath);
+
+            if (!response.ok) {
+                throw new Error("Unable to load manifest.");
+            }
+
+            const manifest = await response.json();
+
+            buildDatasetList(filterDatasets(manifest));
+
+        } catch (err) {
+
+            console.error(err);
+
+            document.getElementById("dataset-list").innerHTML = `
+                <div class="card">
+                    Failed to load manifest.
+                </div>
+            `;
+
+        }
+
+    }
+
+    // ============================================
+    // FILTER
+    // ============================================
+
+    function filterDatasets(files) {
+
+        if (!categories || categories.length === 0) {
+            return files;
+        }
+
+        return files.filter(file =>
+            categories.some(category =>
+                file.label.includes(category)
+            )
+        );
+
+    }
+
+    // ============================================
+    // UI
+    // ============================================
+
+    function buildDatasetList(files) {
+
+        const container = document.getElementById("dataset-list");
+
+        container.innerHTML = "";
+
+        if (files.length === 0) {
+
+            container.innerHTML = `
+                <div class="card">
+                    No datasets found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+        files.forEach(file => {
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const button = document.createElement("button");
+
+            button.className = "button button--primary";
+            button.textContent = "Open";
+
+            if (file.password) {
+                button.classList.add("button--warning");
+            }
+
+            button.addEventListener("click", () => openDataset(file));
+
+            card.innerHTML = `
+                <h3>${file.label.join(" ")}</h3>
+
+                <p><strong>File:</strong> ${file.file}</p>
+
+                <p>
+                    ${
+                        file.password
+                            ? "🔒 Password Protected"
+                            : "🔓 Public Dataset"
+                    }
+                </p>
+            `;
+
+            card.appendChild(button);
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+    // ============================================
+    // OPEN DATASET
+    // ============================================
+
+    async function openDataset(file) {
+
+        if (file.password) {
+
+            const entered = prompt("Enter password:");
+
+            if (entered === null) {
+                return;
+            }
+
+            if (entered !== file.password) {
+                alert("Incorrect password.");
+                return;
+            }
+
+        }
+
+        window.__csvFile = file.file;
+
+        htmx.ajax("GET", "/pages/loadCSV.html", {
+            target: "#content",
+            swap: "innerHTML"
+        });
+
+    }
+
+    // ============================================
+    // START
+    // ============================================
+
+    loadManifest();
+
+})();
+</script>
