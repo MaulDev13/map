@@ -24,24 +24,40 @@
             const navGroup = document.getElementById("navGroup");
 
             files.forEach(item => {
-                const file = item.file;
-
-                console.log("Generated CSV:", file);
-                console.log("Label:", item.label);
-                
                 const btn = document.createElement("button");
                 btn.className = "nav-btn";
 
-                btn.textContent = file.replace(".csv", "").toUpperCase();
+                // Pakai label dari manifest, bukan nama file mentah
+                btn.textContent = item.label.join(" ");
 
-                btn.setAttribute("hx-get", "/pages/loadCSV.html");
-                btn.setAttribute("hx-target", "#content");
-                btn.setAttribute("hx-swap", "innerHTML");
-                btn.setAttribute("hx-indicator", "#loading");
+                // Kasih tanda visual kalau item ini butuh password
+                if (item.password) {
+                    btn.classList.add("nav-btn--locked");
+                }
 
+                // Tidak pakai hx-get statis di sini, karena kita perlu
+                // cek password dulu SEBELUM htmx melakukan swap.
                 btn.addEventListener("click", () => {
-                    window.__csvFile = file; // simpan file mana yang dipilih
+                    if (item.password) {
+                        const enteredPassword = prompt("Enter password:");
+
+                        if (enteredPassword === null) {
+                            return; // Stay on current page
+                        }
+
+                        if (enteredPassword !== item.password) {
+                            alert("Incorrect password.");
+                            return; // Stay on current page
+                        }
+                    }
+
+                    window.__csvFile = item.file; // simpan file mana yang dipilih
                     setActiveNav(btn);
+
+                    htmx.ajax("GET", "/pages/loadCSV.html", {
+                        target: "#content",
+                        swap: "innerHTML"
+                    });
                 });
 
                 navGroup.appendChild(btn);

@@ -1,142 +1,38 @@
 <section id="home-page">
 
     <div class="hero">
-        <div class="card" style="text-align:center; padding:3rem;">
-            <h1>🇮🇩 Temukan Tempat Terbaik di Indonesia</h1>
+        <div class="card" style="text-align:center;padding:3rem;">
+
+            <h1>📄 CSV Dataset Viewer</h1>
 
             <p>
-                Jelajahi ribuan rekomendasi tempat dari berbagai kota di Indonesia.
-                Mulai dari kos, cafe, restoran, coworking space, tempat wisata,
-                hingga fasilitas umum dalam satu platform.
+                Browse, open, and view CSV files directly from your browser.
+                Select a dataset below to preview, search, and explore its contents.
             </p>
 
-            <div style="margin-top:2rem;">
-                <a href="#explore" class="button">
-                    Jelajahi Tempat →
-                </a>
-
-                <a href="#categories" class="button button--secondary">
-                    Lihat Kategori
-                </a>
-            </div>
         </div>
     </div>
 
-    <div class="card-group" style="margin-top:2rem;">
+    <div class="card" style="margin-top:2rem;">
 
-        <div class="card">
-            <h3>🏠 Kos</h3>
-            <p>
-                Cari kos putra, putri, maupun campur dengan informasi fasilitas,
-                harga, lokasi, dan ulasan pengguna.
-            </p>
-        </div>
+        <h2>Available Datasets</h2>
 
-        <div class="card">
-            <h3>☕ Cafe</h3>
-            <p>
-                Temukan cafe untuk nongkrong, bekerja, meeting, maupun sekadar
-                menikmati kopi terbaik di kotamu.
-            </p>
+        <p>
+            Choose one of the CSV files below.
+            Password-protected datasets will require authentication before opening.
+        </p>
 
-            <div class="card card--sm project-item">
-                <button
-                    class="button button--primary"
-                    hx-get="/pages/contents/cafe-content.html"
-                    hx-target="#cafe-content"
-                    hx-trigger="click once"
-                    hx-swap="innerHTML"
-                    onclick="toggleProject(this, 'cafe-content')"
-                >
-                    <span>List</span>
-                    <span class="arrow">▼</span>
-                </button>
-
-                <div id="cafe-content" class="project-content hidden"></div>
-
-            </div>
-
-        </div>
-
-        <div class="card">
-            <h3>🍜 Kuliner</h3>
-            <p>
-                Jelajahi berbagai restoran, warung makan, street food,
-                hingga tempat makan viral di seluruh Indonesia.
-            </p>
-        </div>
-
-        <div class="card">
-            <h3>💼 Coworking Space</h3>
-            <p>
-                Cari tempat kerja yang nyaman dengan fasilitas internet cepat,
-                ruang meeting, dan suasana produktif.
-            </p>
-        </div>
-
-        <div class="card">
-            <h3>🏨 Penginapan</h3>
-            <p>
-                Temukan hotel, homestay, guest house, maupun villa
-                untuk perjalanan bisnis ataupun liburan.
-            </p>
-
-            <div class="card card--sm project-item">
-                <button
-                    class="button button--primary"
-                    hx-get="/pages/contents/hostelry-content.html"
-                    hx-target="#hostelry-content"
-                    hx-trigger="click once"
-                    hx-swap="innerHTML"
-                    onclick="toggleProject(this, 'hostelry-content')"
-                >
-                    <span>List</span>
-                    <span class="arrow">▼</span>
-                </button>
-
-                <div id="hostelry-content" class="project-content hidden"></div>
-
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>📍 Tempat Lainnya</h3>
-            <p>
-                Masjid, taman, rumah sakit, minimarket, gym, laundry,
-                ATM, dan berbagai tempat penting lainnya.
-            </p>
-        </div>
+        <div
+            id="dataset-list"
+            class="card-group"
+            style="margin-top:1.5rem;"
+        ></div>
 
     </div>
 
-    <div class="card" style="margin-top:2rem; text-align:center; padding:2rem;">
-        <h2>Mengapa Menggunakan Platform Ini?</h2>
-
-        <div style="display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-top:1.5rem;">
-
-            <div>
-                <strong>📍 Lokasi Akurat</strong><br>
-                Informasi tempat berdasarkan kota dan wilayah di Indonesia.
-            </div>
-
-            <div>
-                <strong>⭐ Ulasan Pengguna</strong><br>
-                Lihat pengalaman pengguna sebelum mengunjungi suatu tempat.
-            </div>
-
-            <div>
-                <strong>🔍 Pencarian Mudah</strong><br>
-                Temukan tempat berdasarkan kategori, kota, atau nama.
-            </div>
-
-            <div>
-                <strong>📱 Responsif</strong><br>
-                Nyaman digunakan melalui desktop maupun perangkat mobile.
-            </div>
-
-        </div>
-    </div>
+    <div
+        id="dataset-content"
+        style="margin-top:2rem;"
+    ></div>
 
 </section>
-
-<script src="/js/features/toggle-ui.js"></script>
