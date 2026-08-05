@@ -16,6 +16,40 @@
 
         <h2>Available Datasets</h2>
 
+        <div style="margin-top:1rem;">
+
+            <input
+                type="text"
+                id="dataset-search"
+                placeholder="Search by file name..."
+                style="width:100%; padding:0.5rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem;"
+            />
+
+            <div class="column-toggles" id="protection-toggles">
+
+                <label class="toggle-all-item">
+                    <input type="checkbox" class="column-checkbox" id="toggle-all" checked />
+                    <span class="column-toggle-label">All</span>
+                </label>
+
+                <div class="column-selector">
+
+                    <label class="column-toggle-item">
+                        <input type="checkbox" class="column-checkbox toggle-mode" value="free" checked />
+                        <span class="column-toggle-label">🔓 Free</span>
+                    </label>
+
+                    <label class="column-toggle-item">
+                        <input type="checkbox" class="column-checkbox toggle-mode" value="protected" checked />
+                        <span class="column-toggle-label">🔒 Protected</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
         <div
             id="dataset-list"
             class="card-group"
@@ -40,6 +74,11 @@
 
     const manifestPath = "data/manifest.json";
 
+    // state
+    let allFiles = [];
+    let searchTerm = "";
+    let activeModes = new Set(["free", "protected"]); // which modes are checked
+
     // ============================================
     // LOAD MANIFEST
     // ============================================
@@ -56,7 +95,9 @@
 
             const manifest = await response.json();
 
-            buildDatasetList(filterDatasets(manifest));
+            allFiles = filterByCategory(manifest);
+
+            render();
 
         } catch (err) {
 
@@ -73,10 +114,10 @@
     }
 
     // ============================================
-    // FILTER
+    // FILTERS
     // ============================================
 
-    function filterDatasets(files) {
+    function filterByCategory(files) {
 
         if (!categories || categories.length === 0) {
             return files;
@@ -90,9 +131,42 @@
 
     }
 
+    function stripExtension(filename) {
+        return filename.replace(/\.[^/.]+$/, "");
+    }
+
+    function applyFilters() {
+
+        return allFiles.filter(file => {
+
+            // protection filter
+            const mode = file.password ? "protected" : "free";
+
+            if (!activeModes.has(mode)) {
+                return false;
+            }
+
+            // search filter (filename without extension)
+            if (searchTerm) {
+                const nameOnly = stripExtension(file.file).toLowerCase();
+                if (!nameOnly.includes(searchTerm.toLowerCase())) {
+                    return false;
+                }
+            }
+
+            return true;
+
+        });
+
+    }
+
     // ============================================
-    // UI
+    // RENDER LIST
     // ============================================
+
+    function render() {
+        buildDatasetList(applyFilters());
+    }
 
     function buildDatasetList(files) {
 
@@ -151,6 +225,62 @@
     }
 
     // ============================================
+    // SEARCH + TOGGLE WIRING
+    // ============================================
+
+    function setupControls() {
+
+        // search
+        const searchInput = document.getElementById("dataset-search");
+
+        searchInput.addEventListener("input", (e) => {
+            searchTerm = e.target.value.trim();
+            render();
+        });
+
+        // individual mode checkboxes
+        const modeCheckboxes = document.querySelectorAll(".toggle-mode");
+        const allCheckbox = document.getElementById("toggle-all");
+
+        modeCheckboxes.forEach(cb => {
+
+            cb.addEventListener("change", () => {
+
+                activeModes = new Set(
+                    Array.from(modeCheckboxes)
+                        .filter(c => c.checked)
+                        .map(c => c.value)
+                );
+
+                // sync "All" checkbox: checked only if every mode is checked
+                allCheckbox.checked = activeModes.size === modeCheckboxes.length;
+
+                render();
+
+            });
+
+        });
+
+        // "All" checkbox toggles every mode checkbox
+        allCheckbox.addEventListener("change", () => {
+
+            const checked = allCheckbox.checked;
+
+            modeCheckboxes.forEach(cb => {
+                cb.checked = checked;
+            });
+
+            activeModes = checked
+                ? new Set(Array.from(modeCheckboxes).map(c => c.value))
+                : new Set();
+
+            render();
+
+        });
+
+    }
+
+    // ============================================
     // OPEN DATASET
     // ============================================
 
@@ -184,6 +314,7 @@
     // START
     // ============================================
 
+    setupControls();
     loadManifest();
 
 })();

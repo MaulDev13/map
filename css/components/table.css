@@ -2,6 +2,22 @@
    TABLE WRAPPER
    ========================================================= */
 
+#tableData thead th.sort-asc,
+#tableData thead th.sort-desc {
+  background-color: #eef;
+}
+
+#tableData thead th {
+    white-space: nowrap;
+}
+
+#tableData thead th .sort-arrow {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+    margin-left: 4px;
+}
+
 .table-wrapper {
 	width: 100%;
 	overflow-x: auto;
