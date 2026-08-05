@@ -12,6 +12,11 @@ const DEFAULT_HIDDEN_COLUMNS = []// ["Keyword"];
 // Leave as "auto" to detect automatically.
 const CSV_DELIMITER = "auto";
 
+// ---- state for sorting ----
+let currentHeaders = [];
+let originalData = [];   // data as loaded from CSV (never mutated)
+let sortState = { colIndex: null, direction: null }; // direction: "asc" | "desc" | null
+
 // Detect delimiter from the header line
 function getDelimiter(headerLine) {
     if (CSV_DELIMITER !== "auto") {
@@ -52,7 +57,11 @@ async function loadCSV() {
             .slice(1)
             .map(row => row.split(delimiter).map(cell => cell.trim()));
 
-        createTable(headers, data);
+        currentHeaders = headers;
+        originalData = data;
+        sortState = { colIndex: null, direction: null };
+
+        renderTable(headers, data);
         updateCsvTitle(file);
 
     } catch (err) {
@@ -78,6 +87,77 @@ function truncate(text, maxLength = 20) {
     return text.slice(0, maxLength) + "...";
 }
 
+// Try to compare as numbers if both sides look numeric, otherwise compare as strings
+function compareValues(a, b) {
+    const aClean = a.trim().replace(/,/g, "");
+    const bClean = b.trim().replace(/,/g, "");
+    const aNum = parseFloat(aClean);
+    const bNum = parseFloat(bClean);
+    const bothNumeric =
+        !isNaN(aNum) && !isNaN(bNum) &&
+        /^-?\d+(\.\d+)?$/.test(aClean) &&
+        /^-?\d+(\.\d+)?$/.test(bClean);
+
+    if (bothNumeric) return aNum - bNum;
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
+}
+
+// Returns originalData, sorted if a sort is active, otherwise untouched
+function getSortedData() {
+    const { colIndex, direction } = sortState;
+    if (colIndex === null || direction === null) {
+        return originalData;
+    }
+
+    const sorted = [...originalData].sort((rowA, rowB) => {
+        const a = rowA[colIndex] || "";
+        const b = rowB[colIndex] || "";
+        const cmp = compareValues(a, b);
+        return direction === "asc" ? cmp : -cmp;
+    });
+
+    return sorted;
+}
+
+function renderTable(headers, data) {
+    createTable(headers, data);
+    updateSortIndicators();
+}
+
+// Click handler for a header cell: asc -> desc -> original order -> asc ...
+function handleHeaderClick(colIndex) {
+    if (sortState.colIndex !== colIndex) {
+        sortState = { colIndex, direction: "asc" };
+    } else if (sortState.direction === "asc") {
+        sortState = { colIndex, direction: "desc" };
+    } else if (sortState.direction === "desc") {
+        sortState = { colIndex: null, direction: null };
+    } else {
+        sortState = { colIndex, direction: "asc" };
+    }
+
+    renderTable(currentHeaders, getSortedData());
+}
+
+// Only updates the arrow span text/class — never touches header width/content otherwise
+function updateSortIndicators() {
+    const ths = document.querySelectorAll("#tableData thead th");
+    ths.forEach(th => {
+        const idx = Number(th.dataset.colIndex);
+        th.classList.remove("sort-asc", "sort-desc");
+
+        const arrowEl = th.querySelector(".sort-arrow");
+        if (!arrowEl) return;
+
+        if (sortState.colIndex === idx && sortState.direction) {
+            arrowEl.textContent = sortState.direction === "asc" ? "▲" : "▼";
+            th.classList.add(sortState.direction === "asc" ? "sort-asc" : "sort-desc");
+        } else {
+            arrowEl.textContent = ""; // span stays in place, just empty
+        }
+    });
+}
+
 function createTable(headers, data) {
     const thead = document.querySelector("#tableData thead");
     const tbody = document.querySelector("#tableData tbody");
@@ -90,8 +170,24 @@ function createTable(headers, data) {
 
     headers.forEach((header, index) => {
         const th = document.createElement("th");
-        th.textContent = header;
         th.dataset.colIndex = index; // <-- penanda kolom
+        th.dataset.label = header;
+        th.style.cursor = "pointer";
+        th.title = "Click to sort";
+
+        const labelSpan = document.createElement("span");
+        labelSpan.classList.add("th-label");
+        labelSpan.textContent = header;
+
+        const arrowSpan = document.createElement("span");
+        arrowSpan.classList.add("sort-arrow");
+        arrowSpan.textContent = ""; // always present, fixed width via CSS
+
+        th.appendChild(labelSpan);
+        th.appendChild(arrowSpan);
+
+        th.addEventListener("click", () => handleHeaderClick(index));
+
         trHead.appendChild(th);
     });
 
@@ -157,11 +253,6 @@ function renderColumnToggles(headers) {
     const selectorWrapper = document.createElement("div");
     selectorWrapper.classList.add("column-selector");
     container.appendChild(selectorWrapper);
-
-    // // ===== Separator tipis (opsional, biar Toggle All kebeda dari list kolom) =====
-    // const divider = document.createElement("span");
-    // divider.classList.add("column-toggle-divider");
-    // container.appendChild(divider);
 
     // ===== Checkbox per kolom, langsung jadi flex item, TANPA grid terpisah =====
     headers.forEach((header, index) => {
