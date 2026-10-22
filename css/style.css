@@ -1,20 +1,24 @@
+/* =========================================================
+   MAUL DEV — bundled stylesheet
+   Modular partials imported here. Only styles actually used
+   by the app are kept. Light/dark theming lives in tokens.css.
+   ========================================================= */
+
+/* base */
 @import "./base/tokens.css";
 @import "./base/base.css";
 @import "./base/typography.css";
-
 @import "./base/utilities.css";
 
+/* components */
 @import "./components/navbar.css";
 @import "./components/footer.css";
-@import "./components/button.css";
-@import "./components/link.css";
-@import "./components/tags.css";
 @import "./components/card.css";
+@import "./components/button.css";
 @import "./components/project.css";
-@import "./components/table.css";
 @import "./components/column.css";
+@import "./components/table.css";
+@import "./components/text-view.css";
 
-@import "./components/avatar.css";
-
-@import "./pages/cv.css";
-@import "./pages/skill-tree.css";
+/* pages */
+@import "./pages/print.css";

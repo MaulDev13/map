@@ -1,16 +1,18 @@
 /* =========================================================
-   NAV
+   NAVBAR + THEME TOGGLE
    ========================================================= */
 .navbar {
 	position: sticky;
 	top: 0;
+	z-index: 20;
 	padding: var(--space-md);
-	background: rgba(246, 248, 251, .85);
+	background: var(--nav-bg);
 	backdrop-filter: blur(8px);
 }
 
 .nav-group {
 	display: flex;
+	align-items: center;
 	justify-content: center;
 	gap: var(--space-lg);
 }
@@ -22,12 +24,25 @@
 	font-size: var(--text-sm);
 	cursor: pointer;
 }
+.nav-btn:hover { color: var(--text-title); }
+.nav-btn.is-active { color: var(--primary); font-weight: var(--font-semibold); }
 
-.nav-btn:hover {
-	color: var(--text-title);
+/* theme toggle sits on the right of the nav */
+.theme-toggle {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius-full);
+	background: var(--surface);
+	color: var(--text-body);
+	font-size: var(--text-md);
+	line-height: 1;
+	cursor: pointer;
+	transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
-
-.nav-btn.is-active {
-	color: var(--primary);
-	font-weight: 600;
-}
+.theme-toggle:hover { border-color: var(--primary); transform: translateY(-1px); }
+.theme-toggle:active { transform: translateY(0); }

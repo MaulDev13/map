@@ -1,142 +1,87 @@
-<section id="home-page">
+<section id="home-page" class="page-stack">
 
-    <div class="hero">
-        <div class="card" style="text-align:center; padding:3rem;">
-            <h1>🇮🇩 Temukan Tempat Terbaik di Indonesia</h1>
-
-            <p>
-                Jelajahi ribuan rekomendasi tempat dari berbagai kota di Indonesia.
-                Mulai dari kos, cafe, restoran, coworking space, tempat wisata,
-                hingga fasilitas umum dalam satu platform.
-            </p>
-
-            <div style="margin-top:2rem;">
-                <a href="#explore" class="button">
-                    Jelajahi Tempat →
-                </a>
-
-                <a href="#categories" class="button button--secondary">
-                    Lihat Kategori
-                </a>
-            </div>
-        </div>
+    <div class="card hero-card">
+        <h1>🇮🇩 Temukan Tempat Terbaik di Indonesia</h1>
+        <p>
+            Jelajahi rekomendasi tempat dari berbagai kota di Indonesia.
+            Pilih kategori di bawah untuk melihat daftar data yang tersedia.
+        </p>
     </div>
 
-    <div class="card-group" style="margin-top:2rem;">
+    <div class="card-group category-grid">
 
-        <div class="card">
-            <h3>🏠 Kos</h3>
-            <p>
-                Cari kos putra, putri, maupun campur dengan informasi fasilitas,
-                harga, lokasi, dan ulasan pengguna.
-            </p>
+        <div class="card category" data-reveal>
+            <button class="category__head" type="button" data-category="Kos" onclick="toggleCategory(this)">
+                <span class="category__icon">🏠</span>
+                <span class="category__title">
+                    <strong>Kos</strong>
+                    <span class="text-meta">Kos putra, putri, dan campur</span>
+                </span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="project-content hidden"></div>
         </div>
 
-        <div class="card">
-            <h3>☕ Cafe</h3>
-            <p>
-                Temukan cafe untuk nongkrong, bekerja, meeting, maupun sekadar
-                menikmati kopi terbaik di kotamu.
-            </p>
-
-            <div class="card card--sm project-item">
-                <button
-                    class="button button--primary"
-                    hx-get="/pages/contents/cafe-content.html"
-                    hx-target="#cafe-content"
-                    hx-trigger="click once"
-                    hx-swap="innerHTML"
-                    onclick="toggleProject(this, 'cafe-content')"
-                >
-                    <span>List</span>
-                    <span class="arrow">▼</span>
-                </button>
-
-                <div id="cafe-content" class="project-content hidden"></div>
-
-            </div>
-
+        <div class="card category" data-reveal>
+            <button class="category__head" type="button" data-category="Cafe" onclick="toggleCategory(this)">
+                <span class="category__icon">☕</span>
+                <span class="category__title">
+                    <strong>Cafe</strong>
+                    <span class="text-meta">Tempat nongkrong dan kerja</span>
+                </span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="project-content hidden"></div>
         </div>
 
-        <div class="card">
-            <h3>🍜 Kuliner</h3>
-            <p>
-                Jelajahi berbagai restoran, warung makan, street food,
-                hingga tempat makan viral di seluruh Indonesia.
-            </p>
+        <div class="card category" data-reveal>
+            <button class="category__head" type="button" data-category="Kuliner" onclick="toggleCategory(this)">
+                <span class="category__icon">🍜</span>
+                <span class="category__title">
+                    <strong>Kuliner</strong>
+                    <span class="text-meta">Restoran dan street food</span>
+                </span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="project-content hidden"></div>
         </div>
 
-        <div class="card">
-            <h3>💼 Coworking Space</h3>
-            <p>
-                Cari tempat kerja yang nyaman dengan fasilitas internet cepat,
-                ruang meeting, dan suasana produktif.
-            </p>
+        <div class="card category" data-reveal>
+            <button class="category__head" type="button" data-category="Coworking" onclick="toggleCategory(this)">
+                <span class="category__icon">💼</span>
+                <span class="category__title">
+                    <strong>Coworking Space</strong>
+                    <span class="text-meta">Ruang kerja dan meeting</span>
+                </span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="project-content hidden"></div>
         </div>
 
-        <div class="card">
-            <h3>🏨 Penginapan</h3>
-            <p>
-                Temukan hotel, homestay, guest house, maupun villa
-                untuk perjalanan bisnis ataupun liburan.
-            </p>
-
-            <div class="card card--sm project-item">
-                <button
-                    class="button button--primary"
-                    hx-get="/pages/contents/hostelry-content.html"
-                    hx-target="#hostelry-content"
-                    hx-trigger="click once"
-                    hx-swap="innerHTML"
-                    onclick="toggleProject(this, 'hostelry-content')"
-                >
-                    <span>List</span>
-                    <span class="arrow">▼</span>
-                </button>
-
-                <div id="hostelry-content" class="project-content hidden"></div>
-
-            </div>
+        <div class="card category" data-reveal>
+            <button class="category__head" type="button" data-category="Penginapan" onclick="toggleCategory(this)">
+                <span class="category__icon">🏨</span>
+                <span class="category__title">
+                    <strong>Penginapan</strong>
+                    <span class="text-meta">Hotel, homestay, dan villa</span>
+                </span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="project-content hidden"></div>
         </div>
 
-        <div class="card">
-            <h3>📍 Tempat Lainnya</h3>
-            <p>
-                Masjid, taman, rumah sakit, minimarket, gym, laundry,
-                ATM, dan berbagai tempat penting lainnya.
-            </p>
+        <div class="card category" data-reveal>
+            <button class="category__head" type="button" data-category="Lainnya" onclick="toggleCategory(this)">
+                <span class="category__icon">📍</span>
+                <span class="category__title">
+                    <strong>Tempat Lainnya</strong>
+                    <span class="text-meta">Masjid, taman, gym, dll.</span>
+                </span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="project-content hidden"></div>
         </div>
 
-    </div>
-
-    <div class="card" style="margin-top:2rem; text-align:center; padding:2rem;">
-        <h2>Mengapa Menggunakan Platform Ini?</h2>
-
-        <div style="display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin-top:1.5rem;">
-
-            <div>
-                <strong>📍 Lokasi Akurat</strong><br>
-                Informasi tempat berdasarkan kota dan wilayah di Indonesia.
-            </div>
-
-            <div>
-                <strong>⭐ Ulasan Pengguna</strong><br>
-                Lihat pengalaman pengguna sebelum mengunjungi suatu tempat.
-            </div>
-
-            <div>
-                <strong>🔍 Pencarian Mudah</strong><br>
-                Temukan tempat berdasarkan kategori, kota, atau nama.
-            </div>
-
-            <div>
-                <strong>📱 Responsif</strong><br>
-                Nyaman digunakan melalui desktop maupun perangkat mobile.
-            </div>
-
-        </div>
     </div>
 
 </section>
-
-<script src="/js/features/toggle-ui.js"></script>

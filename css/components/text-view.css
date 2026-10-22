@@ -1,0 +1,14 @@
+/* =========================================================
+   TEXT VIEW (.txt files, view-only)
+   ========================================================= */
+.text-view {
+	margin: 0;
+	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+	font-size: var(--text-sm);
+	line-height: var(--leading-relaxed);
+	color: var(--text-body);
+	white-space: pre-wrap;   /* wrap long lines, keep whitespace */
+	word-break: break-word;
+	overflow-x: auto;
+	tab-size: 4;
+}

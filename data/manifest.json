@@ -1,6 +1,7 @@
 [
     {
         "file": "cafe.csv",
+        "type": "csv",
         "label": [
             "Cafe"
         ],
@@ -8,6 +9,7 @@
     },
     {
         "file": "kos.csv",
+        "type": "csv",
         "label": [
             "Kos"
         ],
@@ -15,6 +17,7 @@
     },
     {
         "file": "kos_clean (1).csv",
+        "type": "csv",
         "label": [
             "Kos",
             "Clean",
@@ -24,6 +27,7 @@
     },
     {
         "file": "kos_clean.csv",
+        "type": "csv",
         "label": [
             "Kos",
             "Clean"

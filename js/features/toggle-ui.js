@@ -1,28 +1,36 @@
-function toggleProject(button, targetId) {
-    const target = document.getElementById(targetId);
-    if (!target) return;
+// ======================================================
+// TOGGLE UI
+// Expand/collapse the inline category list on the home page.
+// Lazily renders the list (via renderCategoryList) the first
+// time a category is opened. Only one category open at a time.
+// ======================================================
 
-    const isOpen = !target.classList.contains("hidden");
+function toggleCategory(button) {
+    const category = button.dataset.category;
+    const panel = button.parentElement.querySelector(".project-content");
+    if (!panel) return;
 
-    // CLOSE ALL PROJECTS
-    document.querySelectorAll(".project-content")
-        .forEach(el => el.classList.add("hidden"));
+    const isOpen = !panel.classList.contains("hidden");
 
-    // RESET ALL ARROWS
-    document.querySelectorAll(".arrow")
-        .forEach(el => el.textContent = "▼");
+    // Collapse every open category + reset arrows/active state.
+    document.querySelectorAll(".project-content").forEach(el => el.classList.add("hidden"));
+    document.querySelectorAll("[data-category] .arrow").forEach(el => (el.textContent = "▼"));
+    document.querySelectorAll("[data-category]").forEach(b => b.classList.remove("is-open"));
 
-    // OPEN CURRENT
-    if (!isOpen) {
-        target.classList.remove("hidden");
-        button.querySelector(".arrow").textContent = "▲";
+    if (isOpen) return; // was open -> now closed, nothing more to do
 
-        // ✅ smooth scroll to opened content
-        setTimeout(() => {
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        }, 50);
+    panel.classList.remove("hidden");
+    button.classList.add("is-open");
+    const arrow = button.querySelector(".arrow");
+    if (arrow) arrow.textContent = "▲";
+
+    // Render once (lazy). Marked via data-loaded so re-opening is instant.
+    if (panel.dataset.loaded !== "true" && typeof renderCategoryList === "function") {
+        renderCategoryList(category, panel);
+        panel.dataset.loaded = "true";
     }
+
+    setTimeout(() => panel.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
 }
+
+window.toggleCategory = toggleCategory;

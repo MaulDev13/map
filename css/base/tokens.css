@@ -1,120 +1,112 @@
 /* =========================================================
-   TOKENS
+   TOKENS + THEMING
+   Light by default; dark via :root[data-theme="dark"]
+   or OS preference when no explicit choice is stored.
    ========================================================= */
 
 :root {
-
-	/* =====================================================
-	   COLORS
-	   ===================================================== */
-
+	/* color */
 	--bg: #f6f8fb;
-
-	--surface: #ffffff;
+	--surface: #fff;
 	--surface-soft: #f1f5f9;
 	--surface-hover: #e8eef5;
-
 	--border: #e2e8f0;
-	--border-hover: #cbd5e1;
 	--border-focus: #99f6e4;
 
-	/* TEXT */
 	--text-title: #0f172a;
 	--text-body: #1e293b;
 	--text-meta: #64748b;
-	--text-invert: #ffffff;
 
-	/* PRIMARY */
 	--primary: #14b8a6;
 	--primary-hover: #0d9488;
 	--primary-active: #0f766e;
-	--primary-soft: rgba(20, 184, 166, 0.08);
+	--primary-soft: rgba(20, 184, 166, .08);
 
-	/* STATUS */
 	--success: #10b981;
 	--warning: #f59e0b;
 	--danger: #ef4444;
 
-	/* =====================================================
-	   SPACING
-	   ===================================================== */
+	--nav-bg: rgba(246, 248, 251, .85);
 
-	--space-2xs: .125rem;
+	/* spacing */
 	--space-xs: .25rem;
 	--space-sm: .5rem;
 	--space-md: 1rem;
 	--space-lg: 1.5rem;
 	--space-xl: 2rem;
-	--space-2xl: 3rem;
 
-	/* =====================================================
-	   TYPOGRAPHY
-	   ===================================================== */
-
-	--font-sans:
-		system-ui,
-		-apple-system,
-		"BlinkMacSystemFont",
-		"Segoe UI",
-		Roboto,
-		Arial,
-		sans-serif;
-
-	/* FONT SIZE */
+	/* type */
+	--font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 	--text-xs: .75rem;
 	--text-sm: .875rem;
 	--text-md: 1rem;
 	--text-lg: 1.125rem;
 	--text-xl: 1.25rem;
 	--text-2xl: 1.5rem;
-	--text-3xl: 2rem;
-
-	/* FONT WEIGHT */
-	--font-thin: 200;
 	--font-regular: 400;
 	--font-medium: 500;
 	--font-semibold: 600;
 	--font-bold: 700;
-
-	/* LINE HEIGHT */
 	--leading-tight: 1.2;
 	--leading-normal: 1.5;
 	--leading-relaxed: 1.7;
 
-	/* =====================================================
-	   RADIUS
-	   ===================================================== */
-
+	/* radius + shadow + motion */
 	--radius-sm: .5rem;
 	--radius-md: .75rem;
 	--radius-lg: 1rem;
 	--radius-full: 999px;
-
-	/* =====================================================
-	   SHADOWS
-	   ===================================================== */
-
 	--shadow-sm: 0 1px 2px rgba(15, 23, 42, .04);
-
-	--shadow-md:
-		0 4px 12px rgba(15, 23, 42, .06);
-
-	--shadow-lg:
-		0 10px 24px rgba(15, 23, 42, .08);
-
-	/* =====================================================
-	   LAYOUT
-	   ===================================================== */
-
-	--container-sm: 640px;
-	--container-md: 768px;
-	--container-lg: 1024px;
-
-	/* =====================================================
-	   MOTION
-	   ===================================================== */
-
+	--shadow-md: 0 4px 12px rgba(15, 23, 42, .06);
+	--shadow-lg: 0 10px 24px rgba(15, 23, 42, .08);
 	--transition-fast: 160ms ease;
 	--transition-normal: 240ms ease;
+}
 
+/* ---------- DARK THEME (explicit choice) ---------- */
+:root[data-theme="dark"] {
+	--bg: #0b1220;
+	--surface: #111a2b;
+	--surface-soft: #16213a;
+	--surface-hover: #1d2b47;
+	--border: #26354f;
+	--border-focus: #0f766e;
+
+	--text-title: #f1f5f9;
+	--text-body: #cbd5e1;
+	--text-meta: #94a3b8;
+
+	--primary: #2dd4bf;
+	--primary-hover: #5eead4;
+	--primary-active: #99f6e4;
+	--primary-soft: rgba(45, 212, 191, .12);
+
+	--nav-bg: rgba(11, 18, 32, .85);
+
+	--shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+	--shadow-md: 0 4px 12px rgba(0, 0, 0, .45);
+	--shadow-lg: 0 10px 24px rgba(0, 0, 0, .55);
+}
+
+/* ---------- DARK THEME (OS preference, no stored choice) ---------- */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme]) {
+		--bg: #0b1220;
+		--surface: #111a2b;
+		--surface-soft: #16213a;
+		--surface-hover: #1d2b47;
+		--border: #26354f;
+		--border-focus: #0f766e;
+		--text-title: #f1f5f9;
+		--text-body: #cbd5e1;
+		--text-meta: #94a3b8;
+		--primary: #2dd4bf;
+		--primary-hover: #5eead4;
+		--primary-active: #99f6e4;
+		--primary-soft: rgba(45, 212, 191, .12);
+		--nav-bg: rgba(11, 18, 32, .85);
+		--shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+		--shadow-md: 0 4px 12px rgba(0, 0, 0, .45);
+		--shadow-lg: 0 10px 24px rgba(0, 0, 0, .55);
+	}
 }

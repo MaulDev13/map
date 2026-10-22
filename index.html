@@ -10,6 +10,16 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
 
+    <!-- Apply saved theme before paint to avoid a flash -->
+    <script>
+        (function () {
+            var t = localStorage.getItem("theme");
+            if (t === "dark" || t === "light") {
+                document.documentElement.setAttribute("data-theme", t);
+            }
+        })();
+    </script>
+
     <!-- <meta name="api-base" content="https://simple-go-production.up.railway.app"> -->
     <link rel="stylesheet" href="css/style.css">
 
@@ -60,6 +70,8 @@
 
     <script src="js/core/navigation.js"></script>
 
-    <script src="js/features/loadCSV.js"></script>
+    <script src="js/features/viewer.js"></script>
+    <script src="js/features/category-list.js"></script>
+    <script src="js/features/toggle-ui.js"></script>
 </body>
 </html>

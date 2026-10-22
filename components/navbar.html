@@ -7,55 +7,37 @@
             hx-indicator="#loading">
             Home
         </button>
+
+        <button class="theme-toggle" id="themeToggle" type="button"
+            aria-label="Toggle dark mode" title="Toggle dark/light mode">🌙</button>
     </div>
 </nav>
 
 <script>
-(function () {
-    function setActiveNav(btn) {
-        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("is-active"));
-        btn.classList.add("is-active");
+// ---- Dark / light mode toggle ----
+(function initThemeToggle() {
+    const toggle = document.getElementById("themeToggle");
+    if (!toggle) return;
+
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function currentTheme() {
+        const stored = localStorage.getItem("theme");
+        if (stored === "dark" || stored === "light") return stored;
+        return prefersDark.matches ? "dark" : "light";
     }
 
-    async function buildCsvNav() {
-        try {
-            const res = await fetch("data/manifest.json");
-            const files = await res.json();
-            const navGroup = document.getElementById("navGroup");
-
-            files.forEach(item => {
-                const file = item.file;
-
-                console.log("Generated CSV:", file);
-                console.log("Label:", item.label);
-                
-                const btn = document.createElement("button");
-                btn.className = "nav-btn";
-
-                btn.textContent = file.replace(".csv", "").toUpperCase();
-
-                btn.setAttribute("hx-get", "/pages/loadCSV.html");
-                btn.setAttribute("hx-target", "#content");
-                btn.setAttribute("hx-swap", "innerHTML");
-                btn.setAttribute("hx-indicator", "#loading");
-
-                btn.addEventListener("click", () => {
-                    window.__csvFile = file; // simpan file mana yang dipilih
-                    setActiveNav(btn);
-                });
-
-                navGroup.appendChild(btn);
-
-                // WAJIB: htmx tidak otomatis "melihat" elemen yang
-                // ditambahkan lewat JS setelah initial load.
-                // htmx.process() memberitahu htmx untuk bind hx-* di elemen ini.
-                htmx.process(btn);
-            });
-        } catch (err) {
-            console.error("Gagal membaca manifest CSV:", err);
-        }
+    function apply(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        toggle.textContent = theme === "dark" ? "☀️" : "🌙";
     }
 
-    buildCsvNav();
+    apply(currentTheme());
+
+    toggle.addEventListener("click", () => {
+        const next = currentTheme() === "dark" ? "light" : "dark";
+        localStorage.setItem("theme", next);
+        apply(next);
+    });
 })();
 </script>

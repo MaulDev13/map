@@ -1,15 +1,9 @@
 /* =========================================================
    BASE
    ========================================================= */
-html {
-	scrollbar-gutter: stable;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
+html { scrollbar-gutter: stable; }
 
 body {
 	font-family: var(--font-sans);
@@ -17,6 +11,7 @@ body {
 	line-height: var(--leading-normal);
 	color: var(--text-body);
 	background: radial-gradient(circle at top, var(--surface) 0%, var(--bg) 60%);
+	transition: background var(--transition-normal), color var(--transition-normal);
 }
 
 .container {
@@ -24,17 +19,9 @@ body {
 	max-width: 80rem;
 	margin: 0 auto;
 	padding: var(--space-xl) var(--space-lg);
-	background: transparent;
 	min-width: 0;
 }
 
-.page-stack {
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-lg);
-}
+.content-center { max-width: 80rem; margin: 0 auto; }
 
-.content-center {
-	max-width: 80rem;
-	margin: 0 auto;
-}
+.page-stack { display: flex; flex-direction: column; gap: var(--space-lg); }
