@@ -65,12 +65,170 @@ function renderText(text) {
     if (!host) return;
 
     host.classList.remove("hidden");
+    host.innerHTML = `<article class="doc">${markupToHtml(text)}</article>`;
+}
 
-    const pre = document.createElement("pre");
-    pre.className = "text-view";
-    pre.textContent = text; // textContent escapes everything — safe, view-only
-    host.innerHTML = "";
-    host.appendChild(pre);
+// ------------------------------------------------------
+// Lightweight markup -> HTML (safe subset of Markdown)
+// The source file stays plain, readable .txt. We escape ALL
+// text first, then introduce only a fixed set of tags.
+// Supported: # headings, **bold**, *italic*, `code`,
+// ![alt](src) images, [text](url) links, - lists, > quotes,
+// --- rules, ``` fenced code, blank-line paragraphs.
+// ------------------------------------------------------
+
+function escapeHtml(s) {
+    return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+// Allow http(s), root-relative, and relative paths (e.g. assets/pic.jpg).
+// Block javascript:, data:, and other schemes. Relative paths get BASE_PATH.
+function safeUrl(raw) {
+    const url = raw.trim();
+    const base = (window.CONFIG && CONFIG.BASE_PATH) || "";
+
+    if (/^https?:\/\//i.test(url)) return url;      // absolute http(s)
+    if (/^[a-z][a-z0-9+.-]*:/i.test(url)) return ""; // any other scheme -> reject
+    if (url.startsWith("/")) return url;             // root-relative
+    return base + url;                               // relative -> prefix base
+}
+
+// Inline formatting applied to already-escaped text.
+function formatInline(escaped) {
+    let s = escaped;
+
+    // images: ![alt](src)
+    s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (m, alt, src) => {
+        const url = safeUrl(src);
+        if (!url) return escapeHtml(m);
+        return `<img class="doc-img" src="${encodeURI(url)}" alt="${alt}" loading="lazy">`;
+    });
+
+    // links: [text](url)
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, href) => {
+        const url = safeUrl(href);
+        if (!url) return escapeHtml(m);
+        return `<a href="${encodeURI(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+    });
+
+    // bold, italic, inline code
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+    return s;
+}
+
+function markupToHtml(src) {
+    const lines = String(src).replace(/\r\n?/g, "\n").split("\n");
+    const out = [];
+
+    let i = 0;
+    let paragraph = [];
+    let listItems = [];
+
+    function flushParagraph() {
+        if (paragraph.length) {
+            out.push(`<p>${paragraph.join("<br>")}</p>`);
+            paragraph = [];
+        }
+    }
+    function flushList() {
+        if (listItems.length) {
+            out.push(`<ul>${listItems.map(li => `<li>${li}</li>`).join("")}</ul>`);
+            listItems = [];
+        }
+    }
+    function flushAll() { flushParagraph(); flushList(); }
+
+    while (i < lines.length) {
+        const line = lines[i];
+
+        // fenced code block: ``` ... ```
+        if (/^```/.test(line.trim())) {
+            flushAll();
+            const code = [];
+            i++;
+            while (i < lines.length && !/^```/.test(lines[i].trim())) {
+                code.push(escapeHtml(lines[i]));
+                i++;
+            }
+            i++; // skip closing fence
+            out.push(`<pre class="doc-pre"><code>${code.join("\n")}</code></pre>`);
+            continue;
+        }
+
+        // blank line -> break current block
+        if (line.trim() === "") {
+            flushAll();
+            i++;
+            continue;
+        }
+
+        // horizontal rule
+        if (/^\s*---+\s*$/.test(line)) {
+            flushAll();
+            out.push("<hr>");
+            i++;
+            continue;
+        }
+
+        // heading: #..###### text
+        const heading = line.match(/^(#{1,6})\s+(.*)$/);
+        if (heading) {
+            flushAll();
+            const level = heading[1].length;
+            out.push(`<h${level}>${formatInline(escapeHtml(heading[2]))}</h${level}>`);
+            i++;
+            continue;
+        }
+
+        // blockquote: > text
+        const quote = line.match(/^\s*>\s?(.*)$/);
+        if (quote) {
+            flushParagraph();
+            flushList();
+            const buf = [];
+            let q = quote;
+            while (q) {
+                buf.push(formatInline(escapeHtml(q[1])));
+                i++;
+                q = i < lines.length ? lines[i].match(/^\s*>\s?(.*)$/) : null;
+            }
+            out.push(`<blockquote>${buf.join("<br>")}</blockquote>`);
+            continue;
+        }
+
+        // list item: - text  or  * text
+        const item = line.match(/^\s*[-*]\s+(.*)$/);
+        if (item) {
+            flushParagraph();
+            listItems.push(formatInline(escapeHtml(item[1])));
+            i++;
+            continue;
+        }
+
+        // standalone image line -> treat as block (centered via CSS)
+        if (/^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(line)) {
+            flushAll();
+            out.push(`<p class="doc-figure">${formatInline(escapeHtml(line.trim()))}</p>`);
+            i++;
+            continue;
+        }
+
+        // default: paragraph text
+        flushList();
+        paragraph.push(formatInline(escapeHtml(line)));
+        i++;
+    }
+
+    flushAll();
+    return out.join("\n");
 }
 
 // ======================================================

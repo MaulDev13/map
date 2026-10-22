@@ -1,14 +1,108 @@
 /* =========================================================
-   TEXT VIEW (.txt files, view-only)
+   DOC VIEW (.txt rendered as lightweight markup, view-only)
+   Scoped to .doc so it doesn't affect the rest of the app.
    ========================================================= */
-.text-view {
-	margin: 0;
-	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-	font-size: var(--text-sm);
-	line-height: var(--leading-relaxed);
+.doc {
 	color: var(--text-body);
-	white-space: pre-wrap;   /* wrap long lines, keep whitespace */
+	font-size: var(--text-md);
+	line-height: var(--leading-relaxed);
+	max-width: 70ch;        /* comfortable reading measure */
+	margin: 0 auto;
 	word-break: break-word;
+}
+
+/* ---- Headings ---- */
+.doc h1, .doc h2, .doc h3,
+.doc h4, .doc h5, .doc h6 {
+	color: var(--text-title);
+	line-height: var(--leading-tight);
+	margin: var(--space-lg) 0 var(--space-sm);
+}
+.doc h1 { font-size: var(--text-3xl, 2rem); }
+.doc h2 {
+	font-size: var(--text-2xl);
+	padding-bottom: var(--space-xs);
+	border-bottom: 1px solid var(--border);
+}
+.doc h3 { font-size: var(--text-xl); }
+.doc h4 { font-size: var(--text-lg); }
+.doc h5 { font-size: var(--text-md); }
+.doc h6 { font-size: var(--text-sm); color: var(--text-meta); }
+
+.doc > *:first-child { margin-top: 0; }
+
+/* ---- Text ---- */
+.doc p { margin: 0 0 var(--space-md); }
+.doc strong { font-weight: var(--font-bold); color: var(--text-title); }
+.doc em { font-style: italic; }
+
+.doc a {
+	color: var(--primary);
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.doc a:hover { color: var(--primary-hover); border-bottom-color: currentColor; }
+
+/* ---- Inline code + code blocks ---- */
+.doc code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: .9em;
+	padding: .1em .35em;
+	background: var(--surface-soft);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+}
+.doc-pre {
+	margin: 0 0 var(--space-md);
+	padding: var(--space-md);
+	background: var(--surface-soft);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
 	overflow-x: auto;
-	tab-size: 4;
+	line-height: var(--leading-normal);
+}
+.doc-pre code {
+	padding: 0;
+	background: none;
+	border: none;
+	white-space: pre;
+	font-size: var(--text-sm);
+}
+
+/* ---- Lists ---- */
+.doc ul { margin: 0 0 var(--space-md); padding-left: var(--space-lg); }
+.doc li { margin-bottom: var(--space-xs); }
+
+/* ---- Blockquote ---- */
+.doc blockquote {
+	margin: 0 0 var(--space-md);
+	padding: var(--space-sm) var(--space-md);
+	border-left: 3px solid var(--primary);
+	background: var(--primary-soft);
+	border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+	color: var(--text-meta);
+}
+
+/* ---- Rule ---- */
+.doc hr {
+	border: none;
+	border-top: 1px solid var(--border);
+	margin: var(--space-lg) 0;
+}
+
+/* ---- Images ---- */
+.doc-img {
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--radius-md);
+	border: 1px solid var(--border);
+	vertical-align: middle;
+}
+.doc-figure {
+	text-align: center;
+	margin: var(--space-lg) 0;
+}
+.doc-figure .doc-img {
+	box-shadow: var(--shadow-sm);
 }

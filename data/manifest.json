@@ -33,5 +33,14 @@
             "Clean"
         ],
         "password": null
+    },
+    {
+        "file": "lainnya_notes.txt",
+        "type": "txt",
+        "label": [
+            "Lainnya",
+            "Notes"
+        ],
+        "password": null
     }
 ]
