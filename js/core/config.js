@@ -5,21 +5,30 @@ window.CONFIG = {
         .querySelector('meta[name="api-base"]')
         ?.getAttribute("content") || "",
 
+    // BASE_PATH is the site root. It is ALWAYS either "" or a path that
+    // ends with "/", so callers can safely do `${BASE_PATH}data/x.csv`
+    // (relative-style) and the router can do `${BASE_PATH}pages/x.html`.
     BASE_PATH: (() => {
         const host = location.hostname;
 
-        if (host === "localhost" || host === "127.0.0.1") {
+        // Served from the domain root (local dev, Vercel): no prefix.
+        if (
+            host === "localhost" ||
+            host === "127.0.0.1" ||
+            host.endsWith(".vercel.app")
+        ) {
             return "";
         }
 
-        if (host === "mauldev13.github.io") {
-            return "https://mauldev13.github.io/map";
+        // GitHub Pages serves a project site from /<repo>/.
+        // Derive the first path segment from the URL instead of hardcoding,
+        // so it survives repo renames / case differences.
+        if (host.endsWith("github.io")) {
+            const seg = location.pathname.split("/").filter(Boolean)[0];
+            return seg ? `/${seg}/` : "";
         }
 
-        if (host.endsWith(".vercel.app")) {
-            return "";
-        }
-
+        // Fallback: domain root.
         return "";
     })()
 };

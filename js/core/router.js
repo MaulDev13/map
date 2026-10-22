@@ -19,9 +19,13 @@
             return;
         }
 
-        // Local page/component
+        // Local page/component.
+        // BASE_PATH is "" (root) or ends with "/" (e.g. "/map/").
+        // Strip the path's leading slash so we never produce a double slash,
+        // then re-add one when serving from the domain root.
         if (!path.startsWith("http")) {
-            event.detail.path = BASE_PATH + path;
+            const rel = path.replace(/^\/+/, "");
+            event.detail.path = BASE_PATH ? BASE_PATH + rel : "/" + rel;
         }
     });
 
